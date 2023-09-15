@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:uidemo/loaction_service.dart';
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key});
+  const MyHomePage({Key? key});
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -42,6 +44,26 @@ class _MyHomePageState extends State<MyHomePage> {
     Colors.orange,
     Colors.blue,
   ];
+  String? _currentAddress;
+
+  Future<void> _getCurrentPosition() async {
+    final hasPermission =
+        await LocationService.handleLocationPermission(context);
+
+    if (!hasPermission) return;
+    Position? position = await LocationService.getCurrentPosition();
+
+    if (position != null) {
+      String address = await LocationService.getAddressFromLatLng(position);
+      setState(() {
+        _currentAddress = address;
+      });
+    } else {
+      setState(() {
+        _currentAddress = 'Location unavailable';
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,6 +77,12 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           title: Text(toggleOn ? 'On Duty' : 'Off Duty'),
           actions: [
+            IconButton(
+                onPressed: _getCurrentPosition,
+                icon: Icon(
+                  Icons.location_on_rounded,
+                  size: 30,
+                )),
             IconButton(
                 onPressed: () {},
                 icon: Icon(
@@ -95,24 +123,34 @@ class _MyHomePageState extends State<MyHomePage> {
           children: [
             Container(
               width: MediaQuery.of(context).size.width,
-              height: 30,
+              height: 60,
               color: Colors.blue[800],
-              child: const Align(
-                  alignment: Alignment.centerLeft,
-                  child: Padding(
-                    padding: EdgeInsets.only(left: 10),
-                    child: Text(
+              child: Padding(
+                padding: EdgeInsets.only(left: 10, top: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
                       'WELCOME',
                       style: TextStyle(color: Colors.white),
                     ),
-                  )),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 5),
+                      child: Text(
+                        'LOCATION: ${_currentAddress ?? ""}',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.only(right: 10, left: 10, top: 10),
                 child: GridView.builder(
                   itemCount: nameList.length,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                       childAspectRatio: 10 / 7.5,
                       crossAxisSpacing: 10,
                       mainAxisSpacing: 10,
