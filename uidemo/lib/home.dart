@@ -1,9 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:uidemo/loaction_service.dart';
+import 'package:uidemo/screens/add_client.dart';
+import 'package:uidemo/screens/add_complaints.dart';
+import 'package:uidemo/screens/call_logs.dart';
+import 'package:uidemo/screens/clients.dart';
+import 'package:uidemo/screens/complaints.dart';
+import 'package:uidemo/screens/enquiries.dart';
+import 'package:uidemo/screens/new_enquiry.dart';
+import 'package:uidemo/screens/orders.dart';
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key});
+  const MyHomePage({super.key,});
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -44,6 +52,52 @@ class _MyHomePageState extends State<MyHomePage> {
     Colors.orange,
     Colors.blue,
   ];
+  void navigateToPage(int index) {
+    switch (index) {
+      case 0:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const NewEnquiryScreen()),
+        );
+
+      case 1:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const EnquiryScreen()),
+        );
+      case 2:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const AddClientScreen()),
+        );
+      case 3:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const ClientScreen()),
+        );
+      case 4:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const OrderScreen()),
+        );
+      case 5:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const CallLogScreen()),
+        );
+      case 6:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const AddComplaintsScreen()),
+        );
+      case 7:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const ComplaintsScreen()),
+        );
+    }
+  }
+
   String? _currentAddress;
 
   Future<void> _getCurrentPosition() async {
@@ -73,25 +127,25 @@ class _MyHomePageState extends State<MyHomePage> {
         appBar: AppBar(
           leading: IconButton(
             onPressed: () {},
-            icon: Icon(Icons.menu),
+            icon: const Icon(Icons.menu),
           ),
           title: Text(toggleOn ? 'On Duty' : 'Off Duty'),
           actions: [
             IconButton(
                 onPressed: _getCurrentPosition,
-                icon: Icon(
+                icon: const Icon(
                   Icons.location_on_rounded,
                   size: 30,
                 )),
             IconButton(
                 onPressed: () {},
-                icon: Icon(
+                icon: const Icon(
                   Icons.done,
                   size: 30,
                 )),
             IconButton(
                 onPressed: () {},
-                icon: Icon(
+                icon: const Icon(
                   Icons.notifications,
                   size: 30,
                 )),
@@ -126,11 +180,11 @@ class _MyHomePageState extends State<MyHomePage> {
               height: 60,
               color: Colors.blue[800],
               child: Padding(
-                padding: EdgeInsets.only(left: 10, top: 10),
+                padding: const EdgeInsets.only(left: 10, top: 10),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    const Text(
                       'WELCOME',
                       style: TextStyle(color: Colors.white),
                     ),
@@ -138,7 +192,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       padding: const EdgeInsets.only(top: 5),
                       child: Text(
                         'LOCATION: ${_currentAddress ?? ""}',
-                        style: TextStyle(color: Colors.white),
+                        style: const TextStyle(color: Colors.white),
                       ),
                     ),
                   ],
@@ -156,31 +210,36 @@ class _MyHomePageState extends State<MyHomePage> {
                       mainAxisSpacing: 10,
                       crossAxisCount: 2),
                   itemBuilder: (context, index) {
-                    return Container(
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(5)),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: iconColors[index],
+                    return InkWell(
+                      onTap: () {
+                        navigateToPage(index);
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(5)),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: iconColors[index],
+                              ),
+                              padding: const EdgeInsets.all(10),
+                              child: Icon(
+                                iconList[index],
+                                size: 60,
+                                color: Colors.white,
+                              ),
                             ),
-                            padding: EdgeInsets.all(10),
-                            child: Icon(
-                              iconList[index],
-                              size: 60,
-                              color: Colors.white,
+                            const SizedBox(height: 10),
+                            Text(
+                              nameList[index],
+                              style: const TextStyle(fontSize: 18),
                             ),
-                          ),
-                          SizedBox(height: 10),
-                          Text(
-                            nameList[index],
-                            style: TextStyle(fontSize: 18),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     );
                   },
