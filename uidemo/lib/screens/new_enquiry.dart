@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:uidemo/screens/Add_product/add_product.dart';
+import 'package:uidemo/screens/Add_product/product_model.dart';
 
 class NewEnquiryScreen extends StatefulWidget {
   const NewEnquiryScreen({super.key});
@@ -95,6 +97,15 @@ class _NewEnquiryScreenState extends State<NewEnquiryScreen> {
       },
     );
   }
+  Products? selectedProduct;
+  
+void _selectProduct(Products product) {
+  setState(() {
+    selectedProduct = product;
+  });
+}
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -216,7 +227,7 @@ class _NewEnquiryScreenState extends State<NewEnquiryScreen> {
                       ),
                     ),
                   ),
-                  SizedBox(width: 10),
+                  const SizedBox(width: 10),
                   Expanded(
                     child: Padding(
                       padding: EdgeInsets.only(right: 10, bottom: 20),
@@ -314,7 +325,32 @@ class _NewEnquiryScreenState extends State<NewEnquiryScreen> {
                     ),
                   ),
                 ],
-              )
+              ),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: SizedBox(
+                  width: 135,
+                  child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) {
+                            return AddProductScreen();
+                          },
+                        ));
+                      },
+                      child: const Row(
+                        children: [Text('Add Product'), Icon(Icons.add)],
+                      )),
+                ),
+              ),
+              Container(
+                width: 350,
+                height: 270,
+                decoration: BoxDecoration(
+                    color: Colors.blue[100],
+                    borderRadius: BorderRadius.circular(30)),
+                child: Column(),
+              ),
             ],
           ),
         ),
