@@ -411,7 +411,7 @@ class _NewEnquiryScreenState extends State<NewEnquiryScreen> {
                   );
                 },
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
             ],
           ),
         ),
