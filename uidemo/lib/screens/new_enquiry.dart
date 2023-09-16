@@ -97,15 +97,14 @@ class _NewEnquiryScreenState extends State<NewEnquiryScreen> {
       },
     );
   }
+
   Products? selectedProduct;
-  
-void _selectProduct(Products product) {
-  setState(() {
-    selectedProduct = product;
-  });
-}
 
-
+  void _selectProduct(Products? product) {
+    setState(() {
+      selectedProduct = product;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -331,26 +330,77 @@ void _selectProduct(Products product) {
                 child: SizedBox(
                   width: 135,
                   child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(
+                    onPressed: () async {
+                      final selected = await Navigator.of(context).push(
+                        MaterialPageRoute(
                           builder: (context) {
                             return AddProductScreen();
                           },
-                        ));
-                      },
-                      child: const Row(
-                        children: [Text('Add Product'), Icon(Icons.add)],
-                      )),
+                        ),
+                      );
+                      if (selected != null) {
+                        _selectProduct(selected as Products);
+                      }
+                    },
+                    child: const Row(
+                      children: [Text('Add Product'), Icon(Icons.add)],
+                    ),
+                  ),
                 ),
               ),
-              Container(
-                width: 350,
-                height: 270,
-                decoration: BoxDecoration(
-                    color: Colors.blue[100],
-                    borderRadius: BorderRadius.circular(30)),
-                child: Column(),
-              ),
+              selectedProduct == null? 
+                  SizedBox()
+                  : Padding(
+                      padding: const EdgeInsets.only(bottom: 20, top: 20),
+                      child: Container(
+                        width: 350,
+                        height: 260,
+                        decoration: BoxDecoration(
+                          color: Colors.blue[100],
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        child: Column(
+                          children: [
+                            SizedBox(
+                              height: 180,
+                              width: 150,
+                              child: Center(
+                                child:
+                                    Image.network(selectedProduct!.thumbnail),
+                              ),
+                            ),
+                            Text(
+                              selectedProduct!.title.toString(),
+                              style: const TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              selectedProduct!.brand.toString(),
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              'Price: ₹ ${selectedProduct!.price.toString()}',
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              'Rating: ${selectedProduct!.rating.toString()}',
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
             ],
           ),
         ),

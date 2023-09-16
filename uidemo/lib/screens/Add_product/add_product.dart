@@ -30,7 +30,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
                     padding:
                         const EdgeInsets.only(left: 20, right: 20, top: 20),
                     child: InkWell(
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.of(context).pop(products);
+                      },
                       child: Container(
                         width: 200,
                         height: 270,
