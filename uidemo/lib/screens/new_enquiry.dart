@@ -73,11 +73,11 @@ class _NewEnquiryScreenState extends State<NewEnquiryScreen> {
         return AlertDialog(
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-          title: Center(child: Text('Document Save')),
-          content: Text('Do you want to save?'),
-          contentPadding: EdgeInsets.only(top: 10, left: 70),
+          title: const Center(child: Text('Document Save')),
+          content: const Text('Do you want to save?'),
+          contentPadding: const EdgeInsets.only(top: 10, left: 70),
           actions: [
-            Divider(thickness: 1),
+            const Divider(thickness: 1),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -85,10 +85,10 @@ class _NewEnquiryScreenState extends State<NewEnquiryScreen> {
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
-                    child: Text('Cancel')),
+                    child: const Text('Cancel')),
                 TextButton(
                   onPressed: () {},
-                  child: Text('Save'),
+                  child: const Text('Save'),
                 ),
               ],
             ),
@@ -134,10 +134,10 @@ class _NewEnquiryScreenState extends State<NewEnquiryScreen> {
                 children: [
                   Expanded(
                     child: Padding(
-                      padding: EdgeInsets.only(left: 10, bottom: 20),
+                      padding: const EdgeInsets.only(left: 10, bottom: 20),
                       child: Column(
                         children: [
-                          Padding(
+                          const Padding(
                             padding: EdgeInsets.only(bottom: 10),
                             child: TextField(
                               keyboardType: TextInputType.number,
@@ -146,7 +146,7 @@ class _NewEnquiryScreenState extends State<NewEnquiryScreen> {
                               ),
                             ),
                           ),
-                          Padding(
+                          const Padding(
                             padding: EdgeInsets.only(bottom: 10),
                             child: TextField(
                               keyboardType: TextInputType.number,
@@ -156,7 +156,7 @@ class _NewEnquiryScreenState extends State<NewEnquiryScreen> {
                               ),
                             ),
                           ),
-                          Padding(
+                          const Padding(
                             padding: EdgeInsets.only(bottom: 10),
                             child: TextField(
                               keyboardType: TextInputType.number,
@@ -167,48 +167,48 @@ class _NewEnquiryScreenState extends State<NewEnquiryScreen> {
                             ),
                           ),
                           Padding(
-                            padding: EdgeInsets.only(bottom: 10),
+                            padding: const EdgeInsets.only(bottom: 10),
                             child: TextField(
                               controller: _dateTimeController,
                               decoration: InputDecoration(
                                 suffixIcon: IconButton(
                                   onPressed: _showDatePicker,
-                                  icon: Icon(
+                                  icon: const Icon(
                                     Icons.calendar_month,
                                     color: Colors.blue,
                                   ),
                                 ),
                                 labelText: 'Follow Date',
-                                labelStyle: TextStyle(color: Colors.black),
+                                labelStyle: const TextStyle(color: Colors.black),
                               ),
                             ),
                           ),
                           Padding(
-                            padding: EdgeInsets.only(bottom: 10),
+                            padding: const EdgeInsets.only(bottom: 10),
                             child: TextField(
                               controller: _dateTime2Controller,
                               decoration: InputDecoration(
                                 suffixIcon: IconButton(
                                   onPressed: _showDatePicker2,
-                                  icon: Icon(
+                                  icon: const Icon(
                                     Icons.calendar_month,
                                     color: Colors.blue,
                                   ),
                                 ),
                                 labelText: 'Exp.Closure',
-                                labelStyle: TextStyle(color: Colors.black),
+                                labelStyle: const TextStyle(color: Colors.black),
                               ),
                             ),
                           ),
                           Padding(
-                            padding: EdgeInsets.only(bottom: 10),
+                            padding: const EdgeInsets.only(bottom: 10),
                             child: TextField(
                               decoration: InputDecoration(
                                 labelText: 'Assigned User',
-                                labelStyle: TextStyle(color: Colors.black),
+                                labelStyle: const TextStyle(color: Colors.black),
                                 suffixIcon: IconButton(
                                   onPressed: () {},
-                                  icon: Icon(
+                                  icon: const Icon(
                                     Icons.keyboard_arrow_down,
                                     color: Colors.blue,
                                     size: 30,
@@ -217,7 +217,7 @@ class _NewEnquiryScreenState extends State<NewEnquiryScreen> {
                               ),
                             ),
                           ),
-                          TextField(
+                          const TextField(
                             decoration: InputDecoration(
                               suffixIcon: Icon(Icons.location_on),
                               labelText: 'Location',
@@ -231,10 +231,10 @@ class _NewEnquiryScreenState extends State<NewEnquiryScreen> {
                   const SizedBox(width: 10),
                   Expanded(
                     child: Padding(
-                      padding: EdgeInsets.only(right: 10, bottom: 20),
+                      padding: const EdgeInsets.only(right: 10, bottom: 20),
                       child: Column(
                         children: [
-                          Padding(
+                          const Padding(
                             padding: EdgeInsets.only(bottom: 10),
                             child: TextField(
                               decoration: InputDecoration(
@@ -243,7 +243,7 @@ class _NewEnquiryScreenState extends State<NewEnquiryScreen> {
                               ),
                             ),
                           ),
-                          Padding(
+                          const Padding(
                             padding: EdgeInsets.only(bottom: 10),
                             child: TextField(
                               keyboardType: TextInputType.number,
@@ -253,7 +253,7 @@ class _NewEnquiryScreenState extends State<NewEnquiryScreen> {
                               ),
                             ),
                           ),
-                          Padding(
+                          const Padding(
                             padding: EdgeInsets.only(bottom: 10),
                             child: TextField(
                               decoration: InputDecoration(
@@ -263,29 +263,29 @@ class _NewEnquiryScreenState extends State<NewEnquiryScreen> {
                             ),
                           ),
                           Padding(
-                            padding: EdgeInsets.only(bottom: 10),
+                            padding: const EdgeInsets.only(bottom: 10),
                             child: TextField(
                               controller: _timeController,
                               decoration: InputDecoration(
                                   labelText: 'Follow Up Time',
-                                  labelStyle: TextStyle(color: Colors.black),
+                                  labelStyle: const TextStyle(color: Colors.black),
                                   suffixIcon: IconButton(
                                       onPressed: _showTimePicker,
-                                      icon: Icon(
+                                      icon: const Icon(
                                         Icons.timer_outlined,
                                         color: Colors.blue,
                                       ))),
                             ),
                           ),
                           Padding(
-                            padding: EdgeInsets.only(bottom: 10),
+                            padding: const EdgeInsets.only(bottom: 10),
                             child: TextField(
                               decoration: InputDecoration(
                                 labelText: 'Source ',
-                                labelStyle: TextStyle(color: Colors.black),
+                                labelStyle: const TextStyle(color: Colors.black),
                                 suffixIcon: IconButton(
                                   onPressed: () {},
-                                  icon: Icon(
+                                  icon: const Icon(
                                     Icons.keyboard_arrow_down,
                                     color: Colors.blue,
                                     size: 30,
@@ -295,14 +295,14 @@ class _NewEnquiryScreenState extends State<NewEnquiryScreen> {
                             ),
                           ),
                           Padding(
-                            padding: EdgeInsets.only(bottom: 10),
+                            padding: const EdgeInsets.only(bottom: 10),
                             child: TextField(
                               decoration: InputDecoration(
                                 labelText: 'Tag User',
-                                labelStyle: TextStyle(color: Colors.black),
+                                labelStyle: const TextStyle(color: Colors.black),
                                 suffixIcon: IconButton(
                                   onPressed: () {},
-                                  icon: Icon(
+                                  icon: const Icon(
                                     Icons.keyboard_arrow_down,
                                     color: Colors.blue,
                                     size: 30,
@@ -311,7 +311,7 @@ class _NewEnquiryScreenState extends State<NewEnquiryScreen> {
                               ),
                             ),
                           ),
-                          TextField(
+                          const TextField(
                             decoration: InputDecoration(
                               labelText: 'Referred By',
                               labelStyle: TextStyle(color: Colors.black),
@@ -336,14 +336,14 @@ class _NewEnquiryScreenState extends State<NewEnquiryScreen> {
                       final selected = await Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) {
-                            return AddProductScreen();
+                            return const AddProductScreen();
                           },
                         ),
                       );
                       if (selected != null) {
                         _selectProduct(selected as Products);
                         setState(() {
-                          selectedProductList.add(selected as Products);
+                          selectedProductList.add(selected);
                         });
                       }
                     },

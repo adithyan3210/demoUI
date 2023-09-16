@@ -17,7 +17,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text('Products'),
+        title: const Text('Products'),
       ),
       body: FutureBuilder<List<Products>>(
         future: ApiService.fetchUsers(),
