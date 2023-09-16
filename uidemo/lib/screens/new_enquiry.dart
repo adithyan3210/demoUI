@@ -35,17 +35,17 @@ class _NewEnquiryScreenState extends State<NewEnquiryScreen> {
 
   void _showDatePicker2() {
     showDatePicker(
-            context: context,
-            initialDate: _dateTime2,
-            firstDate: DateTime(2020),
-            lastDate: DateTime(2030))
-        .then((value) {
+      context: context,
+      initialDate: _dateTime2,
+      firstDate: DateTime(2020),
+      lastDate: DateTime(2030),
+    ).then((value) {
       if (value != null) {
         setState(() {
           _dateTime2 = value;
         });
         _dateTime2Controller.text =
-            _dateTime2.toLocal().toString().split('')[0];
+            _dateTime2.toLocal().toString().split(' ')[0];
       }
     });
   }
