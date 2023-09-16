@@ -8,32 +8,59 @@ class NewEnquiryScreen extends StatefulWidget {
 }
 
 class _NewEnquiryScreenState extends State<NewEnquiryScreen> {
+  final TextEditingController _dateTimeController = TextEditingController();
+  final TextEditingController _dateTime2Controller = TextEditingController();
+  final TextEditingController _timeController = TextEditingController();
+
   DateTime _dateTime = DateTime.now();
   DateTime _dateTime2 = DateTime.now();
+  TimeOfDay _timeOfDay = TimeOfDay.now();
 
   void _showDatePicker() {
     showDatePicker(
       context: context,
-      initialDate: DateTime.now(),
+      initialDate: _dateTime,
       firstDate: DateTime(2020),
       lastDate: DateTime(2030),
     ).then((value) {
-      setState(() {
-        _dateTime = value!;
-      });
+      if (value != null) {
+        setState(() {
+          _dateTime = value;
+        });
+
+        _dateTimeController.text = _dateTime.toLocal().toString().split(' ')[0];
+      }
     });
   }
 
   void _showDatePicker2() {
     showDatePicker(
+            context: context,
+            initialDate: _dateTime2,
+            firstDate: DateTime(2020),
+            lastDate: DateTime(2030))
+        .then((value) {
+      if (value != null) {
+        setState(() {
+          _dateTime2 = value;
+        });
+        _dateTime2Controller.text =
+            _dateTime2.toLocal().toString().split('')[0];
+      }
+    });
+  }
+
+  void _showTimePicker() {
+    showTimePicker(
       context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2020),
-      lastDate: DateTime(2030),
+      initialTime: TimeOfDay.now(),
     ).then((value) {
-      setState(() {
-        _dateTime2 = value!;
-      });
+      if (value != null) {
+        setState(() {
+          _timeOfDay = value;
+        });
+        _timeController.text = _timeOfDay.format(context).toString();
+      }
     });
   }
 
@@ -96,12 +123,7 @@ class _NewEnquiryScreenState extends State<NewEnquiryScreen> {
                           Padding(
                             padding: EdgeInsets.only(bottom: 10),
                             child: TextField(
-                              controller: TextEditingController(
-                                text: _dateTime
-                                    .toLocal()
-                                    .toString()
-                                    .split(' ')[0],
-                              ),
+                              controller: _dateTimeController,
                               decoration: InputDecoration(
                                 suffixIcon: IconButton(
                                   onPressed: _showDatePicker,
@@ -118,12 +140,7 @@ class _NewEnquiryScreenState extends State<NewEnquiryScreen> {
                           Padding(
                             padding: EdgeInsets.only(bottom: 10),
                             child: TextField(
-                              controller: TextEditingController(
-                                text: _dateTime2
-                                    .toLocal()
-                                    .toString()
-                                    .split(' ')[0],
-                              ),
+                              controller: _dateTime2Controller,
                               decoration: InputDecoration(
                                 suffixIcon: IconButton(
                                   onPressed: _showDatePicker2,
@@ -202,15 +219,12 @@ class _NewEnquiryScreenState extends State<NewEnquiryScreen> {
                           Padding(
                             padding: EdgeInsets.only(bottom: 10),
                             child: TextField(
+                              controller:_timeController,
                               decoration: InputDecoration(
                                   labelText: 'Follow Up Time',
                                   labelStyle: TextStyle(color: Colors.black),
                                   suffixIcon: IconButton(
-                                      onPressed: () {
-                                        showTimePicker(
-                                            context: context,
-                                            initialTime: TimeOfDay.now());
-                                      },
+                                      onPressed: _showTimePicker,
                                       icon: Icon(
                                         Icons.timer_outlined,
                                         color: Colors.blue,
