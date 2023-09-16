@@ -64,6 +64,38 @@ class _NewEnquiryScreenState extends State<NewEnquiryScreen> {
     });
   }
 
+  void _showSaveDiologue() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          title: Center(child: Text('Document Save')),
+          content: Text('Do you want to save?'),
+          contentPadding: EdgeInsets.only(top: 10, left: 70),
+          actions: [
+            Divider(thickness: 1),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text('Cancel')),
+                TextButton(
+                  onPressed: () {},
+                  child: Text('Save'),
+                ),
+              ],
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -74,7 +106,9 @@ class _NewEnquiryScreenState extends State<NewEnquiryScreen> {
             IconButton(
                 onPressed: () {}, icon: const Icon(Icons.keyboard_voice_sharp)),
             TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  _showSaveDiologue();
+                },
                 child: const Text(
                   'SAVE',
                   style: TextStyle(color: Colors.white),
@@ -219,7 +253,7 @@ class _NewEnquiryScreenState extends State<NewEnquiryScreen> {
                           Padding(
                             padding: EdgeInsets.only(bottom: 10),
                             child: TextField(
-                              controller:_timeController,
+                              controller: _timeController,
                               decoration: InputDecoration(
                                   labelText: 'Follow Up Time',
                                   labelStyle: TextStyle(color: Colors.black),
