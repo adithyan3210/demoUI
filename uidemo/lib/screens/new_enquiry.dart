@@ -106,6 +106,8 @@ class _NewEnquiryScreenState extends State<NewEnquiryScreen> {
     });
   }
 
+  List<Products> selectedProductList = [];
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -340,6 +342,9 @@ class _NewEnquiryScreenState extends State<NewEnquiryScreen> {
                       );
                       if (selected != null) {
                         _selectProduct(selected as Products);
+                        setState(() {
+                          selectedProductList.add(selected as Products);
+                        });
                       }
                     },
                     child: const Row(
@@ -348,59 +353,65 @@ class _NewEnquiryScreenState extends State<NewEnquiryScreen> {
                   ),
                 ),
               ),
-              selectedProduct == null? 
-                  SizedBox()
-                  : Padding(
-                      padding: const EdgeInsets.only(bottom: 20, top: 20),
-                      child: Container(
-                        width: 350,
-                        height: 260,
-                        decoration: BoxDecoration(
-                          color: Colors.blue[100],
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        child: Column(
-                          children: [
-                            SizedBox(
-                              height: 180,
-                              width: 150,
-                              child: Center(
-                                child:
-                                    Image.network(selectedProduct!.thumbnail),
-                              ),
+              ListView.builder(
+                shrinkWrap: true,
+                itemCount: selectedProductList.length,
+                itemBuilder: (context, index) {
+                  Products product = selectedProductList[index];
+                  return Padding(
+                    padding:
+                        const EdgeInsets.only(left: 20, right: 20, top: 20),
+                    child: Container(
+                      width: 350,
+                      height: 260,
+                      decoration: BoxDecoration(
+                        color: Colors.blue[100],
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      child: Column(
+                        children: [
+                          SizedBox(
+                            height: 180,
+                            width: 150,
+                            child: Center(
+                              child: Image.network(product.thumbnail),
                             ),
-                            Text(
-                              selectedProduct!.title.toString(),
-                              style: const TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                              ),
+                          ),
+                          Text(
+                            product.title.toString(),
+                            style: const TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
                             ),
-                            Text(
-                              selectedProduct!.brand.toString(),
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
+                          ),
+                          Text(
+                            product.brand.toString(),
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
                             ),
-                            Text(
-                              'Price: ₹ ${selectedProduct!.price.toString()}',
-                              style: const TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                              ),
+                          ),
+                          Text(
+                            'Price: ₹ ${product.price.toString()}',
+                            style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
                             ),
-                            Text(
-                              'Rating: ${selectedProduct!.rating.toString()}',
-                              style: const TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                              ),
+                          ),
+                          Text(
+                            'Rating: ${product.rating.toString()}',
+                            style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
+                  );
+                },
+              ),
+              SizedBox(height: 10),
             ],
           ),
         ),

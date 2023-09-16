@@ -1,0 +1,28 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "uidemo",
+            "cwd": "uidemo",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "uidemo (profile mode)",
+            "cwd": "uidemo",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "uidemo (release mode)",
+            "cwd": "uidemo",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        }
+    ]
+}
