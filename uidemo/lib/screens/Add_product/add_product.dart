@@ -11,38 +11,35 @@ class AddProductScreen extends StatefulWidget {
 
 class _AddProductScreenState extends State<AddProductScreen> {
   ApiService apiService = ApiService();
-
-  void _showDiologueData() {
+  void _showDiologueData(Products products) {
     showDialog(
       context: context,
       builder: (context) {
+        TextEditingController productController =
+            TextEditingController(text: products.title.toString());
+        TextEditingController priceController =
+            TextEditingController(text: '₹ ${products.price.toString()}');
+
         return AlertDialog(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-          contentPadding: const EdgeInsets.only(top: 10, left: 70, right: 70),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
           actions: [
-            const Divider(thickness: 1),
             Column(
               children: [
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Expanded(
                       child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: TextField(
-                          decoration: InputDecoration(
-                            labelText: 'Product',
-                          ),
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: TextField(
-                          decoration: InputDecoration(
-                            labelText: 'QTY',
+                        padding: EdgeInsets.only(left: 50, right: 50),
+                        child: Center(
+                          child: TextField(
+                            controller: productController,
+                            decoration: InputDecoration(
+                                labelText: 'Product',
+                                floatingLabelAlignment:
+                                    FloatingLabelAlignment.center),
                           ),
                         ),
                       ),
@@ -54,7 +51,33 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   children: [
                     Expanded(
                       child: Padding(
-                        padding: const EdgeInsets.all(8.0),
+                        padding: EdgeInsets.all(8.0),
+                        child: TextField(
+                          decoration: InputDecoration(
+                            labelText: 'QTY',
+                          ),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: TextField(
+                          controller: priceController,
+                          decoration: InputDecoration(
+                            labelText: 'Price',
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.all(8.0),
                         child: TextField(
                           decoration: InputDecoration(
                             labelText: 'Total',
@@ -64,7 +87,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                     ),
                     Expanded(
                       child: Padding(
-                        padding: const EdgeInsets.all(8.0),
+                        padding: EdgeInsets.all(8.0),
                         child: TextField(
                           decoration: InputDecoration(
                             labelText: 'Tax %',
@@ -79,7 +102,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   children: [
                     Expanded(
                       child: Padding(
-                        padding: const EdgeInsets.all(8.0),
+                        padding: EdgeInsets.all(8.0),
                         child: TextField(
                           decoration: InputDecoration(
                             labelText: 'Tax Amount',
@@ -89,7 +112,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                     ),
                     Expanded(
                       child: Padding(
-                        padding: const EdgeInsets.all(8.0),
+                        padding: EdgeInsets.all(8.0),
                         child: TextField(
                           decoration: InputDecoration(
                             labelText: 'Sales Value',
@@ -127,7 +150,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                     child: InkWell(
                       onTap: () {
                         // Navigator.of(context).pop(products);
-                        _showDiologueData();
+                        _showDiologueData(products);
                       },
                       child: Container(
                         width: 200,
