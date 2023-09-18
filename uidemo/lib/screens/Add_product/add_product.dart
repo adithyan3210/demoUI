@@ -11,6 +11,14 @@ class AddProductScreen extends StatefulWidget {
 
 class _AddProductScreenState extends State<AddProductScreen> {
   ApiService apiService = ApiService();
+
+  List<String> PercentageList = [
+    "",
+    "5%",
+    "8%",
+    "12%",
+  ];
+  String selectedPercentage = '';
   void _showDiologueData(Products products) {
     showDialog(
       context: context,
@@ -36,7 +44,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                         child: Center(
                           child: TextField(
                             controller: productController,
-                            decoration: InputDecoration(
+                            decoration: const InputDecoration(
                                 labelText: 'Product',
                                 floatingLabelAlignment:
                                     FloatingLabelAlignment.center),
@@ -53,6 +61,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                       child: Padding(
                         padding: EdgeInsets.all(8.0),
                         child: TextField(
+                          keyboardType: TextInputType.number,
                           decoration: InputDecoration(
                             labelText: 'QTY',
                           ),
@@ -88,10 +97,20 @@ class _AddProductScreenState extends State<AddProductScreen> {
                     Expanded(
                       child: Padding(
                         padding: EdgeInsets.all(8.0),
-                        child: TextField(
-                          decoration: InputDecoration(
-                            labelText: 'Tax %',
-                          ),
+                        child: DropdownButtonFormField(
+                          decoration: InputDecoration(labelText: 'Tax %'),
+                          items: PercentageList.map((String item) {
+                            return DropdownMenuItem<String>(
+                              value: item,
+                              child: Text(item),
+                            );
+                          }).toList(),
+                          value: selectedPercentage,
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              selectedPercentage = newValue!;
+                            });
+                          },
                         ),
                       ),
                     ),
@@ -154,7 +173,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                       },
                       child: Container(
                         width: 200,
-                        height: 270,
+                        height: 280,
                         decoration: BoxDecoration(
                             color: Colors.blue[100],
                             borderRadius: BorderRadius.circular(30)),
