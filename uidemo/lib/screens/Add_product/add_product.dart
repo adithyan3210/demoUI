@@ -19,15 +19,35 @@ class _AddProductScreenState extends State<AddProductScreen> {
     "12%",
   ];
   String selectedPercentage = '';
+
+  TextEditingController qtyController = TextEditingController();
+  TextEditingController totalController = TextEditingController();
+  TextEditingController priceController = TextEditingController();
+
+  void _calculateTotal() {
+    double qty = double.tryParse(qtyController.text) ?? 0.0;
+    double price = double.tryParse(priceController.text) ?? 0.0;
+
+    double total = qty * price;
+
+    setState(() {
+      totalController.text = total.toString();
+    });
+  }
+
   void _showDiologueData(Products products) {
+    TextEditingController productController =
+        TextEditingController(text: products.title.toString());
+    TextEditingController priceController =
+        TextEditingController(text: '₹ ${products.price.toString()}');
+
+    qtyController.text = '';
+    totalController.text = '';
+    qtyController.addListener(_calculateTotal);
+
     showDialog(
       context: context,
       builder: (context) {
-        TextEditingController productController =
-            TextEditingController(text: products.title.toString());
-        TextEditingController priceController =
-            TextEditingController(text: '₹ ${products.price.toString()}');
-
         return AlertDialog(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
@@ -61,7 +81,11 @@ class _AddProductScreenState extends State<AddProductScreen> {
                       child: Padding(
                         padding: EdgeInsets.all(8.0),
                         child: TextField(
+                          controller: qtyController,
                           keyboardType: TextInputType.number,
+                          onChanged: (value) {
+                            _calculateTotal();
+                          },
                           decoration: InputDecoration(
                             labelText: 'QTY',
                           ),
@@ -88,6 +112,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
                       child: Padding(
                         padding: EdgeInsets.all(8.0),
                         child: TextField(
+                          controller: totalController,
+                          readOnly: true, // Make it read-only
                           decoration: InputDecoration(
                             labelText: 'Total',
                           ),
