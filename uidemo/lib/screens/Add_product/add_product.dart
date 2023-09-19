@@ -15,7 +15,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
   TextEditingController taxAmountController = TextEditingController();
 
   void calculateTaxAmount() {
-    // double qty = double.tryParse(qtyController.text) ?? 0.0;
     double price = double.tryParse(priceController.text) ?? 0.0;
 
     double taxAmount = (price / 100 * selectedTaxPercentage);
