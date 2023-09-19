@@ -11,23 +11,41 @@ class AddProductScreen extends StatefulWidget {
 
 class _AddProductScreenState extends State<AddProductScreen> {
   ApiService apiService = ApiService();
+  double selectedTaxPercentage = 0.0;
+  TextEditingController taxAmountController = TextEditingController();
 
-  List<String> PercentageList = [
+  void calculateTaxAmount() {
+    // double qty = double.tryParse(qtyController.text) ?? 0.0;
+    double price = double.tryParse(priceController.text) ?? 0.0;
+
+    double taxAmount = (price / 100 * selectedTaxPercentage);
+
+    setState(() {
+      taxAmountController.text = taxAmount.toString();
+    });
+  }
+
+  List<String> percentageList = [
     "",
     "5%",
     "8%",
     "12%",
   ];
   String selectedPercentage = '';
-
+//////////////////////////////////////////////////////////////////////
   TextEditingController qtyController = TextEditingController();
   TextEditingController totalController = TextEditingController();
   TextEditingController priceController = TextEditingController();
 
   void _calculateTotal() {
-    double qty = double.tryParse(qtyController.text) ?? 0.0;
-    double price = double.tryParse(priceController.text) ?? 0.0;
+    double qty =
+        double.parse(qtyController.text == "" ? "0" : qtyController.text);
+    double price =
+        double.parse(priceController.text == "" ? "0" : priceController.text);
 
+// print(qty.toString());
+
+// print(price.toString());
     double total = qty * price;
 
     setState(() {
@@ -35,15 +53,14 @@ class _AddProductScreenState extends State<AddProductScreen> {
     });
   }
 
+///////////////////////////////////////////////////////////////////////
   void _showDiologueData(Products products) {
     TextEditingController productController =
         TextEditingController(text: products.title.toString());
-    TextEditingController priceController =
-        TextEditingController(text: '₹ ${products.price.toString()}');
 
+    priceController.text = products.price.toString();
     qtyController.text = '';
     totalController.text = '';
-    qtyController.addListener(_calculateTotal);
 
     showDialog(
       context: context,
@@ -113,7 +130,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                         padding: EdgeInsets.all(8.0),
                         child: TextField(
                           controller: totalController,
-                          readOnly: true, // Make it read-only
+                          readOnly: true,
                           decoration: InputDecoration(
                             labelText: 'Total',
                           ),
@@ -125,7 +142,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                         padding: EdgeInsets.all(8.0),
                         child: DropdownButtonFormField(
                           decoration: InputDecoration(labelText: 'Tax %'),
-                          items: PercentageList.map((String item) {
+                          items: percentageList.map((String item) {
                             return DropdownMenuItem<String>(
                               value: item,
                               child: Text(item),
@@ -135,6 +152,12 @@ class _AddProductScreenState extends State<AddProductScreen> {
                           onChanged: (String? newValue) {
                             setState(() {
                               selectedPercentage = newValue!;
+
+                              selectedTaxPercentage = double.tryParse(
+                                      selectedPercentage.replaceAll('%', '')) ??
+                                  0.0;
+
+                              calculateTaxAmount();
                             });
                           },
                         ),
@@ -149,6 +172,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                       child: Padding(
                         padding: EdgeInsets.all(8.0),
                         child: TextField(
+                          controller: taxAmountController,
                           decoration: InputDecoration(
                             labelText: 'Tax Amount',
                           ),
@@ -173,6 +197,12 @@ class _AddProductScreenState extends State<AddProductScreen> {
         );
       },
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    //_calculateTotal();
   }
 
   @override
