@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:uidemo/screens/Add_product/add_product.dart';
-import 'package:uidemo/screens/Add_product/product_model.dart';
+import 'package:uidemo/screens/Add_product/prdct_modelinfi.dart';
 
 class NewEnquiryScreen extends StatefulWidget {
-  const NewEnquiryScreen({super.key});
+  final List<ProductInfo> savedProductInfoList;
+
+  const NewEnquiryScreen({super.key, required this.savedProductInfoList});
 
   @override
   State<NewEnquiryScreen> createState() => _NewEnquiryScreenState();
@@ -98,15 +100,16 @@ class _NewEnquiryScreenState extends State<NewEnquiryScreen> {
     );
   }
 
-  Products? selectedProduct;
-
-  void _selectProduct(Products? product) {
-    setState(() {
-      selectedProduct = product;
-    });
+  ProductInfo? selectedProductData;
+  void _selectProductData(ProductInfo? productInfo) {
+    if (productInfo != null) {
+      setState(() {
+        selectedProductData = productInfo;
+      });
+    }
   }
 
-  List<Products> selectedProductList = [];
+  List<ProductInfo> selectedProductDataList = [];
 
   @override
   Widget build(BuildContext context) {
@@ -179,7 +182,8 @@ class _NewEnquiryScreenState extends State<NewEnquiryScreen> {
                                   ),
                                 ),
                                 labelText: 'Follow Date',
-                                labelStyle: const TextStyle(color: Colors.black),
+                                labelStyle:
+                                    const TextStyle(color: Colors.black),
                               ),
                             ),
                           ),
@@ -196,7 +200,8 @@ class _NewEnquiryScreenState extends State<NewEnquiryScreen> {
                                   ),
                                 ),
                                 labelText: 'Exp.Closure',
-                                labelStyle: const TextStyle(color: Colors.black),
+                                labelStyle:
+                                    const TextStyle(color: Colors.black),
                               ),
                             ),
                           ),
@@ -205,7 +210,8 @@ class _NewEnquiryScreenState extends State<NewEnquiryScreen> {
                             child: TextField(
                               decoration: InputDecoration(
                                 labelText: 'Assigned User',
-                                labelStyle: const TextStyle(color: Colors.black),
+                                labelStyle:
+                                    const TextStyle(color: Colors.black),
                                 suffixIcon: IconButton(
                                   onPressed: () {},
                                   icon: const Icon(
@@ -268,7 +274,8 @@ class _NewEnquiryScreenState extends State<NewEnquiryScreen> {
                               controller: _timeController,
                               decoration: InputDecoration(
                                   labelText: 'Follow Up Time',
-                                  labelStyle: const TextStyle(color: Colors.black),
+                                  labelStyle:
+                                      const TextStyle(color: Colors.black),
                                   suffixIcon: IconButton(
                                       onPressed: _showTimePicker,
                                       icon: const Icon(
@@ -282,7 +289,8 @@ class _NewEnquiryScreenState extends State<NewEnquiryScreen> {
                             child: TextField(
                               decoration: InputDecoration(
                                 labelText: 'Source ',
-                                labelStyle: const TextStyle(color: Colors.black),
+                                labelStyle:
+                                    const TextStyle(color: Colors.black),
                                 suffixIcon: IconButton(
                                   onPressed: () {},
                                   icon: const Icon(
@@ -299,7 +307,8 @@ class _NewEnquiryScreenState extends State<NewEnquiryScreen> {
                             child: TextField(
                               decoration: InputDecoration(
                                 labelText: 'Tag User',
-                                labelStyle: const TextStyle(color: Colors.black),
+                                labelStyle:
+                                    const TextStyle(color: Colors.black),
                                 suffixIcon: IconButton(
                                   onPressed: () {},
                                   icon: const Icon(
@@ -341,9 +350,9 @@ class _NewEnquiryScreenState extends State<NewEnquiryScreen> {
                         ),
                       );
                       if (selected != null) {
-                        _selectProduct(selected as Products);
+                        _selectProductData(selected as ProductInfo);
                         setState(() {
-                          selectedProductList.add(selected);
+                          selectedProductDataList.add(selected);
                         });
                       }
                     },
@@ -353,65 +362,69 @@ class _NewEnquiryScreenState extends State<NewEnquiryScreen> {
                   ),
                 ),
               ),
+              Divider(),
               ListView.builder(
                 shrinkWrap: true,
-                itemCount: selectedProductList.length,
+                itemCount: selectedProductDataList.length,
                 itemBuilder: (context, index) {
-                  Products product = selectedProductList[index];
+                  ProductInfo productInfo = selectedProductDataList[index];
                   return Padding(
                     padding:
                         const EdgeInsets.only(left: 20, right: 20, top: 20),
-                    child: Container(
-                      width: 350,
-                      height: 260,
-                      decoration: BoxDecoration(
-                        color: Colors.blue[100],
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      child: Column(
-                        children: [
-                          SizedBox(
-                            height: 180,
-                            width: 150,
-                            child: Center(
-                              child: Image.network(product.thumbnail),
+                    child: Stack(
+                      children: [
+                        Column(
+                          children: [
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 10.0),
+                              child: Text(
+                                productInfo.productName.toString(),
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text('Quantity: ${productInfo.qty.toString()}'),
+                                Text(
+                                  'Price: ₹${productInfo.price.toStringAsFixed(2)}',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'Tax Amount: ₹${productInfo.taxAmount.toStringAsFixed(2)}',
+                                ),
+                                Text(
+                                  'Total: ₹${productInfo.total.toStringAsFixed(2)}',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        Positioned(
+                          right: 10.0,
+                          child: IconButton(
+                            onPressed: () {},
+                            icon: Icon(
+                              Icons.edit,
+                              color: Colors.red,
                             ),
                           ),
-                          Text(
-                            product.title.toString(),
-                            style: const TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Text(
-                            product.brand.toString(),
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Text(
-                            'Price: ₹ ${product.price.toString()}',
-                            style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Text(
-                            'Rating: ${product.rating.toString()}',
-                            style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   );
                 },
-              ),
-              const SizedBox(height: 10),
+              )
             ],
           ),
         ),

@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-// import 'package:geocoding/geocoding.dart';
-// import 'package:geolocator/geolocator.dart';
 import 'package:uidemo/home.dart';
 
 void main() {

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:uidemo/screens/Add_product/prdct_modelinfi.dart';
 import 'package:uidemo/screens/Add_product/product_model.dart';
 import 'package:uidemo/screens/Add_product/product_service.dart';
+
 
 class AddProductScreen extends StatefulWidget {
   const AddProductScreen({super.key});
@@ -15,14 +17,16 @@ class _AddProductScreenState extends State<AddProductScreen> {
   TextEditingController taxAmountController = TextEditingController();
 
   void calculateTaxAmount() {
-    double price = double.tryParse(priceController.text) ?? 0.0;
+    double price = double.tryParse(totalController.text) ?? 0.0;
 
     double taxAmount = (price / 100 * selectedTaxPercentage);
 
     setState(() {
-      taxAmountController.text = taxAmount.toString();
+      taxAmountController.text = taxAmount.toStringAsFixed(2);
     });
   }
+
+  List<ProductInfo> savedProductInfoList = [];
 
   List<String> percentageList = [
     "",
@@ -41,10 +45,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
         double.parse(qtyController.text == "" ? "0" : qtyController.text);
     double price =
         double.parse(priceController.text == "" ? "0" : priceController.text);
-
-// print(qty.toString());
-
-// print(price.toString());
     double total = qty * price;
 
     setState(() {
@@ -76,7 +76,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   children: [
                     Expanded(
                       child: Padding(
-                        padding: EdgeInsets.only(left: 50, right: 50),
+                        padding: const EdgeInsets.only(left: 50, right: 50),
                         child: Center(
                           child: TextField(
                             controller: productController,
@@ -190,9 +190,31 @@ class _AddProductScreenState extends State<AddProductScreen> {
                     ),
                   ],
                 ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () {
+                    ProductInfo productInfo = ProductInfo(
+                      productName: productController.text,
+                      qty: double.tryParse(qtyController.text) ?? 0.0,
+                      price: double.tryParse(priceController.text) ?? 0.0,
+                      taxAmount:
+                          double.tryParse(taxAmountController.text) ?? 0.0,
+                      total: double.tryParse(totalController.text) ?? 0.0,
+                    );
+
+                    setState(() {
+                      savedProductInfoList.add(productInfo);
+                    });
+
+                    Navigator.of(context).pop();
+                    Navigator.of(context).pop(productInfo);
+                  },
+                  child: const Text('save'),
+                )
               ],
             ),
           ],
+          
         );
       },
     );
@@ -201,7 +223,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
   @override
   void initState() {
     super.initState();
-    //_calculateTotal();
   }
 
   @override
@@ -218,13 +239,14 @@ class _AddProductScreenState extends State<AddProductScreen> {
             return ListView.separated(
                 itemBuilder: (context, index) {
                   Products products = snapshot.data![index];
+                  Products productInfo = snapshot.data![index];
                   return Padding(
                     padding:
                         const EdgeInsets.only(left: 20, right: 20, top: 20),
                     child: InkWell(
                       onTap: () {
                         // Navigator.of(context).pop(products);
-                        _showDiologueData(products);
+                        _showDiologueData(productInfo);
                       },
                       child: Container(
                         width: 200,
