@@ -57,10 +57,7 @@ class _MyHomePageState extends State<MyHomePage> {
       case 0:
         Navigator.push(
           context,
-          MaterialPageRoute(
-              builder: (context) => NewEnquiryScreen(
-                    savedProductInfoList: [],
-                  )),
+          MaterialPageRoute(builder: (context) => NewEnquiryScreen()),
         );
 
       case 1:

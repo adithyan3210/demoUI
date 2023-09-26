@@ -1,20 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:uidemo/screens/Add_product/add_product.dart';
-import 'package:uidemo/screens/Add_product/prdct_modelinfi.dart';
+import 'package:uidemo/screens/Add_product/product_service.dart';
+import 'package:uidemo/screens/Add_product/productino_model.dart';
 
 class NewEnquiryScreen extends StatefulWidget {
-  final List<ProductInfo> savedProductInfoList;
-
-  const NewEnquiryScreen({super.key, required this.savedProductInfoList});
+  const NewEnquiryScreen({super.key});
 
   @override
   State<NewEnquiryScreen> createState() => _NewEnquiryScreenState();
 }
 
 class _NewEnquiryScreenState extends State<NewEnquiryScreen> {
+  List<SelectedProduct> selectedProducts = [];
+
+  String selectedName = "";
   final TextEditingController _dateTimeController = TextEditingController();
   final TextEditingController _dateTime2Controller = TextEditingController();
   final TextEditingController _timeController = TextEditingController();
+
+  TextEditingController taxAmountController = TextEditingController();
+  TextEditingController qtyController = TextEditingController();
+  TextEditingController totalController = TextEditingController();
+  TextEditingController priceController = TextEditingController();
+
+  ApiService apiService = ApiService();
 
   DateTime _dateTime = DateTime.now();
   DateTime _dateTime2 = DateTime.now();
@@ -68,48 +77,194 @@ class _NewEnquiryScreenState extends State<NewEnquiryScreen> {
     });
   }
 
-  void _showSaveDiologue() {
+  void calculateTaxAmount() {
+    double price = double.tryParse(totalController.text) ?? 0.0;
+
+    double taxAmount = (price / 100 * selectedTaxPercentage);
+
+    setState(() {
+      taxAmountController.text = taxAmount.toStringAsFixed(2);
+    });
+  }
+
+  void _calculateTotal() {
+    double qty =
+        double.parse(qtyController.text == "" ? "0" : qtyController.text);
+    double price =
+        double.parse(priceController.text == "" ? "0" : priceController.text);
+    double total = qty * price;
+
+    setState(() {
+      totalController.text = total.toString();
+    });
+  }
+
+  double selectedTaxPercentage = 0.0;
+  List<String> percentageList = [
+    "",
+    "5%",
+    "8%",
+    "12%",
+  ];
+  String selectedPercentage = '';
+
+  void _showDataDiologue() {
     showDialog(
       context: context,
       builder: (context) {
+        qtyController.clear();
+        totalController.clear();
+        selectedPercentage = '';
+
+        taxAmountController.clear();
         return AlertDialog(
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-          title: const Center(child: Text('Document Save')),
-          content: const Text('Do you want to save?'),
-          contentPadding: const EdgeInsets.only(top: 10, left: 70),
+          title: Center(child: Text(selectedName)),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: qtyController,
+                      keyboardType: TextInputType.number,
+                      onChanged: (value) {
+                        _calculateTotal();
+                      },
+                      decoration: const InputDecoration(
+                        labelText: 'QTY',
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: TextField(
+                      controller: priceController,
+                      decoration: const InputDecoration(
+                        labelText: 'Price',
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: totalController,
+                      decoration: const InputDecoration(
+                        labelText: 'Total',
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: DropdownButtonFormField(
+                        decoration: const InputDecoration(labelText: 'Tax %'),
+                        items: percentageList.map((String item) {
+                          return DropdownMenuItem<String>(
+                            value: item,
+                            child: Text(item),
+                          );
+                        }).toList(),
+                        value: selectedPercentage,
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            selectedPercentage = newValue!;
+
+                            selectedTaxPercentage = double.tryParse(
+                                    selectedPercentage.replaceAll('%', '')) ??
+                                0.0;
+
+                            calculateTaxAmount();
+                          });
+                        },
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 10),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: taxAmountController,
+                      decoration: InputDecoration(
+                        labelText: 'Tax Amount',
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 10),
+                  Expanded(
+                    child: TextField(
+                      decoration: InputDecoration(
+                        labelText: 'Sales Value',
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
           actions: [
-            const Divider(thickness: 1),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text('Cancel')),
-                TextButton(
-                  onPressed: () {},
-                  child: const Text('Save'),
-                ),
-              ],
-            ),
+            ElevatedButton(
+              onPressed: () {
+                //Add the code here to save the selected product details  to the selectedProducts list
+
+                Navigator.of(context).pop();
+                final selectedProduct = SelectedProduct(
+                  //   values Assign to  SelectedProduct class
+
+                  name: selectedName,
+                  price: double.tryParse(priceController.text) ?? 0.0,
+                  qty: double.tryParse(qtyController.text) ?? 0.0,
+                  total: double.tryParse(totalController.text) ?? 0.0,
+                  taxPercentage: selectedPercentage,
+                  taxAmount: double.tryParse(taxAmountController.text) ?? 0.0,
+                );
+
+                setState(() {
+                  selectedProducts.add(selectedProduct);
+                });
+              },
+              child: const Text('Save'),
+            )
           ],
         );
       },
     );
   }
 
-  ProductInfo? selectedProductData;
-  void _selectProductData(ProductInfo? productInfo) {
-    if (productInfo != null) {
-      setState(() {
-        selectedProductData = productInfo;
-      });
-    }
+//for set initia value to dialoge
+  void _initialValueSet(SelectedProduct product) {
+    selectedName = product.name;
+    priceController.text = product.price.toString();
+    qtyController.text = product.qty.toString();
+    totalController.text = product.total.toString();
+    selectedPercentage = product.taxPercentage;
+    taxAmountController.text = product.taxAmount.toString();
   }
 
-  List<ProductInfo> selectedProductDataList = [];
+  //update new dialogue
+  void _productUpdate(int index) {
+    final productUpdate = SelectedProduct(
+      name: selectedName,
+      price: double.tryParse(priceController.text) ?? 0.0,
+      qty: double.tryParse(qtyController.text) ?? 0.0,
+      total: double.tryParse(totalController.text) ?? 0.0,
+      taxPercentage: selectedPercentage,
+      taxAmount: double.tryParse(taxAmountController.text) ?? 0.0,
+    );
+    setState(() {
+      selectedProducts[index] = productUpdate;
+    });
+    Navigator.of(context).pop();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -121,9 +276,7 @@ class _NewEnquiryScreenState extends State<NewEnquiryScreen> {
             IconButton(
                 onPressed: () {}, icon: const Icon(Icons.keyboard_voice_sharp)),
             TextButton(
-                onPressed: () {
-                  _showSaveDiologue();
-                },
+                onPressed: () {},
                 child: const Text(
                   'SAVE',
                   style: TextStyle(color: Colors.white),
@@ -349,11 +502,14 @@ class _NewEnquiryScreenState extends State<NewEnquiryScreen> {
                           },
                         ),
                       );
+
                       if (selected != null) {
-                        _selectProductData(selected as ProductInfo);
                         setState(() {
-                          selectedProductDataList.add(selected);
+                          selectedName = selected["name"].toString();
+                          priceController.text = selected["price"].toString();
                         });
+
+                        _showDataDiologue();
                       }
                     },
                     child: const Row(
@@ -362,69 +518,197 @@ class _NewEnquiryScreenState extends State<NewEnquiryScreen> {
                   ),
                 ),
               ),
-              Divider(),
-              ListView.builder(
-                shrinkWrap: true,
-                itemCount: selectedProductDataList.length,
-                itemBuilder: (context, index) {
-                  ProductInfo productInfo = selectedProductDataList[index];
-                  return Padding(
-                    padding:
-                        const EdgeInsets.only(left: 20, right: 20, top: 20),
-                    child: Stack(
-                      children: [
-                        Column(
-                          children: [
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 10.0),
-                              child: Text(
-                                productInfo.productName.toString(),
-                                style: const TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text('Quantity: ${productInfo.qty.toString()}'),
-                                Text(
-                                  'Price: ₹${productInfo.price.toStringAsFixed(2)}',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                              ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  'Tax Amount: ₹${productInfo.taxAmount.toStringAsFixed(2)}',
-                                ),
-                                Text(
-                                  'Total: ₹${productInfo.total.toStringAsFixed(2)}',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                              ],
-                            ),
-                          ],
+              if (selectedProducts.isNotEmpty)
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: selectedProducts.asMap().entries.map((entry) {
+                    final int index = entry.key;
+                    final SelectedProduct product = entry.value;
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      child: Card(
+                        elevation: 2,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
                         ),
-                        Positioned(
-                          right: 10.0,
-                          child: IconButton(
-                            onPressed: () {},
+                        child: ListTile(
+                          contentPadding: EdgeInsets.all(16),
+                          title: Text(
+                            product.name,
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Price:   ₹${product.price.toStringAsFixed(2)}',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              Text(
+                                'QTY  :     ${product.qty}',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              Text(
+                                'Total :    ₹${product.total.toStringAsFixed(2)}',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              Text(
+                                'Tax Amount: ₹${product.taxAmount.toStringAsFixed(2)}  (${product.taxPercentage})',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                          trailing: IconButton(
+                            onPressed: () {
+                              _initialValueSet(product);
+                              showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
+                                    title: Center(child: Text(selectedName)),
+                                    content: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Expanded(
+                                              child: TextField(
+                                                controller: qtyController,
+                                                keyboardType:
+                                                    TextInputType.number,
+                                                onChanged: (value) {
+                                                  _calculateTotal();
+                                                },
+                                                decoration:
+                                                    const InputDecoration(
+                                                  labelText: 'QTY',
+                                                ),
+                                              ),
+                                            ),
+                                            const SizedBox(width: 10),
+                                            Expanded(
+                                              child: TextField(
+                                                controller: priceController,
+                                                decoration:
+                                                    const InputDecoration(
+                                                  labelText: 'Price',
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        const SizedBox(height: 10),
+                                        Row(
+                                          children: [
+                                            Expanded(
+                                              child: TextField(
+                                                controller: totalController,
+                                                decoration:
+                                                    const InputDecoration(
+                                                  labelText: 'Total',
+                                                ),
+                                              ),
+                                            ),
+                                            Expanded(
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: DropdownButtonFormField(
+                                                  decoration:
+                                                      const InputDecoration(
+                                                          labelText: 'Tax %'),
+                                                  items: percentageList
+                                                      .map((String item) {
+                                                    return DropdownMenuItem<
+                                                        String>(
+                                                      value: item,
+                                                      child: Text(item),
+                                                    );
+                                                  }).toList(),
+                                                  value: selectedPercentage,
+                                                  onChanged:
+                                                      (String? newValue) {
+                                                    setState(() {
+                                                      selectedPercentage =
+                                                          newValue!;
+
+                                                      selectedTaxPercentage =
+                                                          double.tryParse(
+                                                                  selectedPercentage
+                                                                      .replaceAll(
+                                                                          '%',
+                                                                          '')) ??
+                                                              0.0;
+
+                                                      calculateTaxAmount();
+                                                    });
+                                                  },
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(height: 10),
+                                        Row(
+                                          children: [
+                                            Expanded(
+                                              child: TextField(
+                                                controller: taxAmountController,
+                                                decoration: InputDecoration(
+                                                  labelText: 'Tax Amount',
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(width: 10),
+                                            Expanded(
+                                              child: TextField(
+                                                decoration: InputDecoration(
+                                                  labelText: 'Sales Value',
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                    actions: [
+                                      Row(mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                        children: [
+                                          ElevatedButton(
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                            child: const Text('Cancel'),
+                                          ),
+                                          ElevatedButton(
+                                            onPressed: () {
+                                              _productUpdate(index);
+                                            },
+                                            child: const Text('Update'),
+                                          ),
+                                        ],
+                                      )
+                                    ],
+                                  );
+                                },
+                              );
+                            },
                             icon: Icon(
                               Icons.edit,
-                              color: Colors.red,
+                              color: Colors.green,
                             ),
                           ),
                         ),
-                      ],
-                    ),
-                  );
-                },
-              )
+                      ),
+                    );
+                  }).toList(),
+                ),
             ],
           ),
         ),
