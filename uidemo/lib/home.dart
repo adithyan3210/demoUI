@@ -57,7 +57,7 @@ class _MyHomePageState extends State<MyHomePage> {
       case 0:
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => NewEnquiryScreen()),
+          MaterialPageRoute(builder: (context) => const NewEnquiryScreen()),
         );
 
       case 1:

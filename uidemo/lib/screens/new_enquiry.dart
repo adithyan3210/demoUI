@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:uidemo/screens/Add_product/add_product.dart';
 import 'package:uidemo/screens/Add_product/product_service.dart';
 import 'package:uidemo/screens/Add_product/productino_model.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 class NewEnquiryScreen extends StatefulWidget {
   const NewEnquiryScreen({super.key});
@@ -22,6 +23,7 @@ class _NewEnquiryScreenState extends State<NewEnquiryScreen> {
   TextEditingController qtyController = TextEditingController();
   TextEditingController totalController = TextEditingController();
   TextEditingController priceController = TextEditingController();
+  TextEditingController saleAmountController = TextEditingController();
 
   ApiService apiService = ApiService();
 
@@ -96,6 +98,17 @@ class _NewEnquiryScreenState extends State<NewEnquiryScreen> {
 
     setState(() {
       totalController.text = total.toString();
+    });
+  }
+
+  void _calculateSaleAmount() {
+    double total =
+        double.parse(totalController.text == "" ? "0" : totalController.text);
+    double taxAmount = double.parse(
+        taxAmountController.text == "" ? "0" : taxAmountController.text);
+    double saleAmount = total + taxAmount;
+    setState(() {
+      saleAmountController.text = saleAmount.toString();
     });
   }
 
@@ -181,6 +194,7 @@ class _NewEnquiryScreenState extends State<NewEnquiryScreen> {
                                 0.0;
 
                             calculateTaxAmount();
+                            _calculateSaleAmount();
                           });
                         },
                       ),
@@ -188,21 +202,22 @@ class _NewEnquiryScreenState extends State<NewEnquiryScreen> {
                   ),
                 ],
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               Row(
                 children: [
                   Expanded(
                     child: TextField(
                       controller: taxAmountController,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         labelText: 'Tax Amount',
                       ),
                     ),
                   ),
-                  SizedBox(width: 10),
+                  const SizedBox(width: 10),
                   Expanded(
                     child: TextField(
-                      decoration: InputDecoration(
+                      controller: saleAmountController,
+                      decoration: const InputDecoration(
                         labelText: 'Sales Value',
                       ),
                     ),
@@ -214,7 +229,7 @@ class _NewEnquiryScreenState extends State<NewEnquiryScreen> {
           actions: [
             ElevatedButton(
               onPressed: () {
-                //Add the code here to save the selected product details  to the selectedProducts list
+                //save the selected product details  to the selectedProducts list
 
                 Navigator.of(context).pop();
                 final selectedProduct = SelectedProduct(
@@ -224,6 +239,7 @@ class _NewEnquiryScreenState extends State<NewEnquiryScreen> {
                   price: double.tryParse(priceController.text) ?? 0.0,
                   qty: double.tryParse(qtyController.text) ?? 0.0,
                   total: double.tryParse(totalController.text) ?? 0.0,
+                  saleAmount: double.tryParse(saleAmountController.text) ?? 0.0,
                   taxPercentage: selectedPercentage,
                   taxAmount: double.tryParse(taxAmountController.text) ?? 0.0,
                 );
@@ -257,6 +273,7 @@ class _NewEnquiryScreenState extends State<NewEnquiryScreen> {
       price: double.tryParse(priceController.text) ?? 0.0,
       qty: double.tryParse(qtyController.text) ?? 0.0,
       total: double.tryParse(totalController.text) ?? 0.0,
+      saleAmount: double.tryParse(saleAmountController.text) ?? 0.0,
       taxPercentage: selectedPercentage,
       taxAmount: double.tryParse(taxAmountController.text) ?? 0.0,
     );
@@ -526,182 +543,226 @@ class _NewEnquiryScreenState extends State<NewEnquiryScreen> {
                     final SelectedProduct product = entry.value;
                     return Padding(
                       padding: const EdgeInsets.symmetric(vertical: 10),
-                      child: Card(
-                        elevation: 2,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: ListTile(
-                          contentPadding: EdgeInsets.all(16),
-                          title: Text(
-                            product.name,
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
+                      child: Slidable(
+                        startActionPane: ActionPane(
+                          motion: StretchMotion(),
+                          children: [
+                            SlidableAction(
+                              icon: Icons.delete,
+                              backgroundColor: Colors.red,
+                              label: 'Delete',
+                              onPressed: (context) => _deleteData(index),
                             ),
+                          ],
+                        ),
+                        endActionPane: ActionPane(
+                          motion: StretchMotion(),
+                          children: [
+                            SlidableAction(
+                              icon: Icons.delete,
+                              backgroundColor: Colors.red,
+                              label: 'Delete',
+                              onPressed: (context) => _deleteData(index),
+                            ),
+                          ],
+                        ),
+                        child: Card(
+                          elevation: 2,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
                           ),
-                          subtitle: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Price:   ₹${product.price.toStringAsFixed(2)}',
-                                style: TextStyle(fontWeight: FontWeight.bold),
+                          child: ListTile(
+                            contentPadding: const EdgeInsets.all(16),
+                            title: Text(
+                              product.name,
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
                               ),
-                              Text(
-                                'QTY  :     ${product.qty}',
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                              Text(
-                                'Total :    ₹${product.total.toStringAsFixed(2)}',
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                              Text(
-                                'Tax Amount: ₹${product.taxAmount.toStringAsFixed(2)}  (${product.taxPercentage})',
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                            ],
-                          ),
-                          trailing: IconButton(
-                            onPressed: () {
-                              _initialValueSet(product);
-                              showDialog(
-                                context: context,
-                                builder: (context) {
-                                  return AlertDialog(
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10)),
-                                    title: Center(child: Text(selectedName)),
-                                    content: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            Expanded(
-                                              child: TextField(
-                                                controller: qtyController,
-                                                keyboardType:
-                                                    TextInputType.number,
-                                                onChanged: (value) {
-                                                  _calculateTotal();
-                                                },
-                                                decoration:
-                                                    const InputDecoration(
-                                                  labelText: 'QTY',
-                                                ),
-                                              ),
-                                            ),
-                                            const SizedBox(width: 10),
-                                            Expanded(
-                                              child: TextField(
-                                                controller: priceController,
-                                                decoration:
-                                                    const InputDecoration(
-                                                  labelText: 'Price',
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        const SizedBox(height: 10),
-                                        Row(
-                                          children: [
-                                            Expanded(
-                                              child: TextField(
-                                                controller: totalController,
-                                                decoration:
-                                                    const InputDecoration(
-                                                  labelText: 'Total',
-                                                ),
-                                              ),
-                                            ),
-                                            Expanded(
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8.0),
-                                                child: DropdownButtonFormField(
+                            ),
+                            subtitle: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Price:   ₹${product.price.toStringAsFixed(2)}',
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                Text(
+                                  'QTY  :     ${product.qty}',
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                Text(
+                                  'Total :    ₹${product.total.toStringAsFixed(2)}',
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                Text(
+                                  'Tax Amount: ₹${product.taxAmount.toStringAsFixed(2)}  (${product.taxPercentage})',
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                const SizedBox(height: 10),
+                                Text(
+                                  'Sale Amount: ₹${product.saleAmount.toStringAsFixed(2)}',
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15,
+                                      color: Colors.green),
+                                ),
+                              ],
+                            ),
+                            trailing: IconButton(
+                              onPressed: () {
+                                _initialValueSet(product);
+                                showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                      title: Center(child: Text(selectedName)),
+                                      content: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Expanded(
+                                                child: TextField(
+                                                  controller: qtyController,
+                                                  keyboardType:
+                                                      TextInputType.number,
+                                                  onChanged: (value) {
+                                                    _calculateTotal();
+                                                  },
                                                   decoration:
                                                       const InputDecoration(
-                                                          labelText: 'Tax %'),
-                                                  items: percentageList
-                                                      .map((String item) {
-                                                    return DropdownMenuItem<
-                                                        String>(
-                                                      value: item,
-                                                      child: Text(item),
-                                                    );
-                                                  }).toList(),
-                                                  value: selectedPercentage,
-                                                  onChanged:
-                                                      (String? newValue) {
-                                                    setState(() {
-                                                      selectedPercentage =
-                                                          newValue!;
-
-                                                      selectedTaxPercentage =
-                                                          double.tryParse(
-                                                                  selectedPercentage
-                                                                      .replaceAll(
-                                                                          '%',
-                                                                          '')) ??
-                                                              0.0;
-
-                                                      calculateTaxAmount();
-                                                    });
-                                                  },
+                                                    labelText: 'QTY',
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                          ],
-                                        ),
-                                        SizedBox(height: 10),
-                                        Row(
-                                          children: [
-                                            Expanded(
-                                              child: TextField(
-                                                controller: taxAmountController,
-                                                decoration: InputDecoration(
-                                                  labelText: 'Tax Amount',
+                                              const SizedBox(width: 10),
+                                              Expanded(
+                                                child: TextField(
+                                                  controller: priceController,
+                                                  decoration:
+                                                      const InputDecoration(
+                                                    labelText: 'Price',
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                            SizedBox(width: 10),
-                                            Expanded(
-                                              child: TextField(
-                                                decoration: InputDecoration(
-                                                  labelText: 'Sales Value',
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                    actions: [
-                                      Row(mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                        children: [
-                                          ElevatedButton(
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                            child: const Text('Cancel'),
+                                            ],
                                           ),
-                                          ElevatedButton(
-                                            onPressed: () {
-                                              _productUpdate(index);
-                                            },
-                                            child: const Text('Update'),
+                                          const SizedBox(height: 10),
+                                          Row(
+                                            children: [
+                                              Expanded(
+                                                child: TextField(
+                                                  controller: totalController,
+                                                  decoration:
+                                                      const InputDecoration(
+                                                    labelText: 'Total',
+                                                  ),
+                                                ),
+                                              ),
+                                              Expanded(
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(8.0),
+                                                  child:
+                                                      DropdownButtonFormField(
+                                                    decoration:
+                                                        const InputDecoration(
+                                                            labelText: 'Tax %'),
+                                                    items: percentageList
+                                                        .map((String item) {
+                                                      return DropdownMenuItem<
+                                                          String>(
+                                                        value: item,
+                                                        child: Text(item),
+                                                      );
+                                                    }).toList(),
+                                                    value: selectedPercentage,
+                                                    onChanged:
+                                                        (String? newValue) {
+                                                      setState(() {
+                                                        selectedPercentage =
+                                                            newValue!;
+
+                                                        selectedTaxPercentage =
+                                                            double.tryParse(
+                                                                    selectedPercentage
+                                                                        .replaceAll(
+                                                                            '%',
+                                                                            '')) ??
+                                                                0.0;
+
+                                                        calculateTaxAmount();
+                                                      });
+                                                    },
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          const SizedBox(height: 10),
+                                          Row(
+                                            children: [
+                                              Expanded(
+                                                child: TextField(
+                                                  controller:
+                                                      taxAmountController,
+                                                  decoration:
+                                                      const InputDecoration(
+                                                    labelText: 'Tax Amount',
+                                                  ),
+                                                ),
+                                              ),
+                                              const SizedBox(width: 10),
+                                              Expanded(
+                                                child: TextField(
+                                                  controller:
+                                                      saleAmountController,
+                                                  decoration:
+                                                      const InputDecoration(
+                                                    labelText: 'Sales Value',
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         ],
-                                      )
-                                    ],
-                                  );
-                                },
-                              );
-                            },
-                            icon: Icon(
-                              Icons.edit,
-                              color: Colors.green,
+                                      ),
+                                      actions: [
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceAround,
+                                          children: [
+                                            ElevatedButton(
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                              child: const Text('Cancel'),
+                                            ),
+                                            ElevatedButton(
+                                              onPressed: () {
+                                                _productUpdate(index);
+                                              },
+                                              child: const Text('Update'),
+                                            ),
+                                          ],
+                                        )
+                                      ],
+                                    );
+                                  },
+                                );
+                              },
+                              icon: const Icon(
+                                Icons.edit,
+                                color: Colors.green,
+                              ),
                             ),
                           ),
                         ),
@@ -714,5 +775,11 @@ class _NewEnquiryScreenState extends State<NewEnquiryScreen> {
         ),
       ),
     );
+  }
+
+  void _deleteData(int index) {
+    setState(() {
+      selectedProducts.removeAt(index);
+    });
   }
 }
