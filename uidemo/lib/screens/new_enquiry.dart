@@ -545,7 +545,7 @@ class _NewEnquiryScreenState extends State<NewEnquiryScreen> {
                       padding: const EdgeInsets.symmetric(vertical: 10),
                       child: Slidable(
                         startActionPane: ActionPane(
-                          motion: StretchMotion(),
+                          motion: const StretchMotion(),
                           children: [
                             SlidableAction(
                               icon: Icons.delete,
@@ -556,7 +556,7 @@ class _NewEnquiryScreenState extends State<NewEnquiryScreen> {
                           ],
                         ),
                         endActionPane: ActionPane(
-                          motion: StretchMotion(),
+                          motion: const StretchMotion(),
                           children: [
                             SlidableAction(
                               icon: Icons.delete,

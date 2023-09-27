@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uidemo/loaction_service.dart';
 import 'package:uidemo/screens/add_client.dart';
 import 'package:uidemo/screens/add_complaints.dart';
@@ -7,6 +8,7 @@ import 'package:uidemo/screens/call_logs.dart';
 import 'package:uidemo/screens/clients.dart';
 import 'package:uidemo/screens/complaints.dart';
 import 'package:uidemo/screens/enquiries.dart';
+import 'package:uidemo/screens/logIn.dart';
 import 'package:uidemo/screens/new_enquiry.dart';
 import 'package:uidemo/screens/orders.dart';
 
@@ -18,6 +20,17 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  Future<void> _logout() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove('name');
+    await prefs.remove('password');
+    Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => LoginScreen(),
+        ));
+  }
+
   bool toggleOn = false;
   double toggleOnSize = 40.0;
   IconData toggleOnIcon = Icons.toggle_on_outlined;
@@ -140,12 +153,6 @@ class _MyHomePageState extends State<MyHomePage> {
             IconButton(
                 onPressed: () {},
                 icon: const Icon(
-                  Icons.done,
-                  size: 30,
-                )),
-            IconButton(
-                onPressed: () {},
-                icon: const Icon(
                   Icons.notifications,
                   size: 30,
                 )),
@@ -170,7 +177,14 @@ class _MyHomePageState extends State<MyHomePage> {
                     color: toggleOn ? Colors.red : Colors.white,
                     size: 40,
                   )),
-            )
+            ),
+            IconButton(
+                onPressed: _logout,
+                icon: const Icon(
+                  Icons.exit_to_app,
+                  color: Colors.red,
+                  size: 30,
+                )),
           ],
         ),
         body: Column(
