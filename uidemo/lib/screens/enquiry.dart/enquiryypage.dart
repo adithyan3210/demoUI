@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:uidemo/screens/enquiry.dart/container_widget.dart';
 import 'package:uidemo/screens/enquiry.dart/data_model.dart';
 
 class EnquiryScreen extends StatefulWidget {
@@ -52,6 +53,7 @@ class _EnquiryScreenState extends State<EnquiryScreen> {
 
   List<Map<String, String?>>? newList = [];
   bool isLoading = false;
+
   updateData() async {
     isLoading = true;
     setState(() {});
@@ -74,6 +76,53 @@ class _EnquiryScreenState extends State<EnquiryScreen> {
       setState(() {});
       print('fail');
       throw Exception('failed load post');
+    }
+  }
+
+  Future<String?> fetchPendingAmount() async {
+    String uri = "https://uat.fibrcrm.com/api/enquirylist/6/0";
+    final response = await http.put(Uri.parse(uri), body: json.encode(request));
+
+    if (response.statusCode == 200) {
+      final getDataPutModel = getDataPutModelFromJson(response.body);
+      return getDataPutModel.pending;
+    } else {
+      throw Exception('Failed to load pending amount from the API');
+    }
+  }
+
+  Future<String?> fetchThisWeek() async {
+    String uri = "https://uat.fibrcrm.com/api/enquirylist/6/0";
+    final response = await http.put(Uri.parse(uri), body: json.encode(request));
+
+    if (response.statusCode == 200) {
+      final getDataPutModel = getDataPutModelFromJson(response.body);
+      return getDataPutModel.thisWeek;
+    } else {
+      throw Exception('Failed to load pending amount from the API');
+    }
+  }
+
+  Future<String?> fetchUpComing() async {
+    String uri = "https://uat.fibrcrm.com/api/enquirylist/6/0";
+    final response = await http.put(Uri.parse(uri), body: json.encode(request));
+    if (response.statusCode == 200) {
+      final GetDataPutModel = getDataPutModelFromJson(response.body);
+      return GetDataPutModel.upcoming;
+    } else {
+      throw Exception('Failed to load pending amount from the API');
+    }
+  }
+
+  Future<String?> fetchToday() async {
+    String uri = "https://uat.fibrcrm.com/api/enquirylist/6/0";
+    final response = await http.put(Uri.parse(uri), body: json.encode(request));
+
+    if (response.statusCode == 200) {
+      final getDataPutModel = getDataPutModelFromJson(response.body);
+      return getDataPutModel.tdyclosure;
+    } else {
+      throw Exception('Failed to load pending amount from the API');
     }
   }
 
@@ -110,88 +159,287 @@ class _EnquiryScreenState extends State<EnquiryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          backgroundColor: Colors.blue,
-          title: Text('Enquiries'),
-        ),
-        body: isLoading
-            ? const Center(child: CircularProgressIndicator())
-            : ListView.separated(
-                separatorBuilder: (context, index) {
-                  return const SizedBox(
-                    height: 10,
-                  );
-                },
-                itemCount: newList?.length ?? 0,
-                itemBuilder: (BuildContext context, int index) {
-                  String? date = newList?[index]['follow_up_date'].toString();
-                  List<String> dateParts = date?.split('-') ?? [];
-                  String monthWord = monthNumberToWord(
-                      dateParts.length > 1 ? dateParts[1] : '');
-                  return Container(
-                    height: 105,
-                    color: Colors.white,
+    return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        backgroundColor: Colors.blue,
+        title: const Text('Enquiries'),
+      ),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 3),
+            child: SizedBox(
+              height: 35,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
                     child: Padding(
-                      padding: const EdgeInsets.only(left: 10, top: 5),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            dateParts.isNotEmpty ? dateParts[0] : '',
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Color.fromARGB(255, 233, 210, 0),
-                            ),
-                          ),
-                          const SizedBox(height: 5),
-                          Row(
-                            children: [
-                              Text(
-                                dateParts.length > 2 ? dateParts[2] : '',
-                                style: const TextStyle(
-                                  fontSize: 30,
-                                  fontWeight: FontWeight.bold,
-                                  color: Color.fromARGB(255, 10, 147, 221),
-                                ),
-                              ),
-                              const SizedBox(width: 15),
-                              Text(
-                                newList?[index]['client_name'].toString() ?? '',
-                                style: const TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black,
-                                ),
-                              ),
-                              Spacer(),
-                              IconButton(
-                                  onPressed: () {},
-                                  icon: Icon(
-                                    Icons.keyboard_arrow_down,
-                                    size: 35,
-                                    color: Colors.blue,
-                                  ))
-                            ],
-                          ),
-                          const SizedBox(height: 5),
-                          Text(
-                            monthWord,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.red,
-                            ),
-                          ),
-                        ],
+                      padding: const EdgeInsets.only(right: 5),
+                      child: Container(
+                        color: Colors.yellow,
+                        child: FutureBuilder(
+                          future: fetchToday(),
+                          builder: (BuildContext context,
+                              AsyncSnapshot<String?> snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const Center();
+                            } else {
+                              String todayCount = snapshot.data ?? '0';
+                              return Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Text(
+                                    'Today',
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    todayCount,
+                                    style: const TextStyle(
+                                      fontSize: 11,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              );
+                            }
+                          },
+                        ),
                       ),
                     ),
-                  );
-                },
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 5),
+                      child: Container(
+                        color: Colors.blue,
+                        child: FutureBuilder(
+                          future: fetchPendingAmount(),
+                          builder: (BuildContext context,
+                              AsyncSnapshot<String?> snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const Center();
+                            } else {
+                              String pendingAmount = snapshot.data ?? '0';
+                              return Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Text(
+                                    'Pending',
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    pendingAmount,
+                                    style: const TextStyle(
+                                      fontSize: 11,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              );
+                            }
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 5),
+                      child: Container(
+                        color: Colors.green,
+                        child: FutureBuilder(
+                          future: fetchThisWeek(),
+                          builder: (BuildContext context,
+                              AsyncSnapshot<String?> snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const Center();
+                            } else {
+                              String thisWeek = snapshot.data ?? '0';
+                              return Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Text(
+                                    'This Week',
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    thisWeek,
+                                    style: const TextStyle(
+                                      fontSize: 11,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              );
+                            }
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 5),
+                      child: Container(
+                        color: Colors.red,
+                        child: FutureBuilder(
+                          future: fetchUpComing(),
+                          builder: (BuildContext context,
+                              AsyncSnapshot<String?> snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const Center();
+                            } else {
+                              String upcoming = snapshot.data ?? '0';
+                              return Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Text(
+                                    'Upcoming',
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    upcoming,
+                                    style: const TextStyle(
+                                      fontSize: 11,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              );
+                            }
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 5),
+                      child: Container(
+                        color: Colors.white,
+                        child: const Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'All',
+                              style: TextStyle(
+                                fontSize: 11,
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              '31',
+                              style: TextStyle(
+                                fontSize: 11,
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
+            ),
+          ),
+          isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : Expanded(
+                  child: ListView.separated(
+                    separatorBuilder: (context, index) {
+                      return const Divider(
+                        height: 50,
+                        color: Color.fromARGB(255, 79, 79, 79),
+                        thickness: 1,
+                      );
+                    },
+                    itemCount: newList?.length ?? 0,
+                    itemBuilder: (BuildContext context, int index) {
+                      String? date =
+                          newList?[index]['follow_up_date'].toString();
+                      List<String> dateParts = date?.split('-') ?? [];
+                      String monthWord = monthNumberToWord(
+                          dateParts.length > 1 ? dateParts[1] : '');
+                      return ExpansionTile(
+                        iconColor: Colors.blue,
+                        leading: Column(
+                          children: [
+                            Text(
+                              dateParts.isNotEmpty ? dateParts[0] : '',
+                              style: const TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                                color: Color.fromARGB(255, 233, 210, 0),
+                              ),
+                            ),
+                            Text(
+                              dateParts.length > 2 ? dateParts[2] : '',
+                              style: const TextStyle(
+                                fontSize: 19,
+                                fontWeight: FontWeight.bold,
+                                color: Color.fromARGB(255, 10, 147, 221),
+                              ),
+                            ),
+                            Text(
+                              monthWord,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.red,
+                              ),
+                            ),
+                          ],
+                        ),
+                        title: Text(
+                          newList?[index]['client_name'].toString() ?? '',
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                        children: [
+                          ContainerRowWidget(
+                            phoneNumber: newList?[index]
+                                        ['client_mobile_number']
+                                    .toString() ??
+                                '',
+                          )
+                        ],
+                      );
+                    },
+                  ),
+                ),
+        ],
       ),
     );
   }
