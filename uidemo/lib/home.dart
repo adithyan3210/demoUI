@@ -7,7 +7,7 @@ import 'package:uidemo/screens/add_complaints.dart';
 import 'package:uidemo/screens/call_logs.dart';
 import 'package:uidemo/screens/clients.dart';
 import 'package:uidemo/screens/complaints.dart';
-import 'package:uidemo/screens/enquiries.dart';
+import 'package:uidemo/screens/enquiry.dart/enquiryypage.dart';
 import 'package:uidemo/screens/logIn.dart';
 import 'package:uidemo/screens/new_enquiry.dart';
 import 'package:uidemo/screens/orders.dart';
@@ -24,10 +24,11 @@ class _MyHomePageState extends State<MyHomePage> {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.remove('name');
     await prefs.remove('password');
+    // ignore: use_build_context_synchronously
     Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => LoginScreen(),
+          builder: (context) => const LoginScreen(),
         ));
   }
 

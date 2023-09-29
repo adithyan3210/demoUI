@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: username != null ? MyHomePage() : LoginScreen(),
+      home: username != null ? const MyHomePage() : const LoginScreen(),
     );
   }
 }

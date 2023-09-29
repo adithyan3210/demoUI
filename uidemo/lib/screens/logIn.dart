@@ -22,13 +22,14 @@ class _LoginScreenState extends State<LoginScreen> {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setString('name', _usernameController.text);
       prefs.setString('password', _passwordController.text.toString());
+      // ignore: use_build_context_synchronously
       Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => MyHomePage(),
+            builder: (context) => const MyHomePage(),
           ));
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text('Incorrect username or password'),
         duration: Duration(seconds: 3),
       ));
