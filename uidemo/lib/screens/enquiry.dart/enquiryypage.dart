@@ -429,8 +429,11 @@ class _EnquiryScreenState extends State<EnquiryScreen> {
                         ),
                         children: [
                           ContainerRowWidget(
-                            phoneNumber: newList?[index]
-                                        ['client_mobile_number']
+                            phoneNumber: newList?[index]['client_mobile_number']
+                                    .toString() ??
+                                '',
+                            secondaryNumber: newList?[index]
+                                        ['client_phone_number']
                                     .toString() ??
                                 '',
                           )

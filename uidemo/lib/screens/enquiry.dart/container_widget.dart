@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ContainerRowWidget extends StatelessWidget {
   final String phoneNumber;
-  const ContainerRowWidget({super.key, required this.phoneNumber});
+  final String secondaryNumber;
+  const ContainerRowWidget(
+      {super.key, required this.phoneNumber, required this.secondaryNumber});
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +49,40 @@ class ContainerRowWidget extends StatelessWidget {
                         context: context,
                         builder: (BuildContext context) {
                           return AlertDialog(
-                            title: Text(phoneNumber),
+                            title: Center(child: Text('Contact')),
+                            content: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                TextButton(
+                                  onPressed: () async {
+                                    final Uri url = Uri(
+                                      scheme: 'tel',
+                                      path: phoneNumber,
+                                    );
+                                    if (await canLaunchUrl(url)) {
+                                      await launchUrl(url);
+                                    } else {
+                                      print('Cannot call');
+                                    }
+                                  },
+                                  child: Text('Number 1: $phoneNumber'),
+                                ),
+                                TextButton(
+                                  onPressed: () async {
+                                    final Uri url = Uri(
+                                        scheme: 'tel', path: secondaryNumber);
+                                    if (await canLaunchUrl(url)) {
+                                      await launchUrl(url);
+                                    } else {
+                                      print('cannot call number 2');
+                                    }
+                                  },
+                                  child: Text('Number 1: $secondaryNumber'),
+                                ),
+                              ],
+                            ),
                           );
                         },
                       );
