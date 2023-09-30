@@ -2,8 +2,9 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'package:uidemo/screens/enquiry.dart/container_widget.dart';
 import 'package:uidemo/screens/enquiry.dart/data_model.dart';
+import 'package:uidemo/screens/new_enquiry/new_enquiry_screen.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class EnquiryScreen extends StatefulWidget {
   const EnquiryScreen({super.key});
@@ -79,53 +80,6 @@ class _EnquiryScreenState extends State<EnquiryScreen> {
     }
   }
 
-  Future<String?> fetchPendingAmount() async {
-    String uri = "https://uat.fibrcrm.com/api/enquirylist/6/0";
-    final response = await http.put(Uri.parse(uri), body: json.encode(request));
-
-    if (response.statusCode == 200) {
-      final getDataPutModel = getDataPutModelFromJson(response.body);
-      return getDataPutModel.pending;
-    } else {
-      throw Exception('Failed to load pending amount from the API');
-    }
-  }
-
-  Future<String?> fetchThisWeek() async {
-    String uri = "https://uat.fibrcrm.com/api/enquirylist/6/0";
-    final response = await http.put(Uri.parse(uri), body: json.encode(request));
-
-    if (response.statusCode == 200) {
-      final getDataPutModel = getDataPutModelFromJson(response.body);
-      return getDataPutModel.thisWeek;
-    } else {
-      throw Exception('Failed to load pending amount from the API');
-    }
-  }
-
-  Future<String?> fetchUpComing() async {
-    String uri = "https://uat.fibrcrm.com/api/enquirylist/6/0";
-    final response = await http.put(Uri.parse(uri), body: json.encode(request));
-    if (response.statusCode == 200) {
-      final GetDataPutModel = getDataPutModelFromJson(response.body);
-      return GetDataPutModel.upcoming;
-    } else {
-      throw Exception('Failed to load pending amount from the API');
-    }
-  }
-
-  Future<String?> fetchToday() async {
-    String uri = "https://uat.fibrcrm.com/api/enquirylist/6/0";
-    final response = await http.put(Uri.parse(uri), body: json.encode(request));
-
-    if (response.statusCode == 200) {
-      final getDataPutModel = getDataPutModelFromJson(response.body);
-      return getDataPutModel.tdyclosure;
-    } else {
-      throw Exception('Failed to load pending amount from the API');
-    }
-  }
-
   String monthNumberToWord(String? month) {
     switch (month) {
       case '01':
@@ -167,210 +121,6 @@ class _EnquiryScreenState extends State<EnquiryScreen> {
       ),
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 3),
-            child: SizedBox(
-              height: 35,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 5),
-                      child: Container(
-                        color: Colors.yellow,
-                        child: FutureBuilder(
-                          future: fetchToday(),
-                          builder: (BuildContext context,
-                              AsyncSnapshot<String?> snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return const Center();
-                            } else {
-                              String todayCount = snapshot.data ?? '0';
-                              return Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  const Text(
-                                    'Today',
-                                    style: TextStyle(
-                                      fontSize: 11,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  Text(
-                                    todayCount,
-                                    style: const TextStyle(
-                                      fontSize: 11,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ],
-                              );
-                            }
-                          },
-                        ),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 5),
-                      child: Container(
-                        color: Colors.blue,
-                        child: FutureBuilder(
-                          future: fetchPendingAmount(),
-                          builder: (BuildContext context,
-                              AsyncSnapshot<String?> snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return const Center();
-                            } else {
-                              String pendingAmount = snapshot.data ?? '0';
-                              return Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  const Text(
-                                    'Pending',
-                                    style: TextStyle(
-                                      fontSize: 11,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  Text(
-                                    pendingAmount,
-                                    style: const TextStyle(
-                                      fontSize: 11,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ],
-                              );
-                            }
-                          },
-                        ),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 5),
-                      child: Container(
-                        color: Colors.green,
-                        child: FutureBuilder(
-                          future: fetchThisWeek(),
-                          builder: (BuildContext context,
-                              AsyncSnapshot<String?> snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return const Center();
-                            } else {
-                              String thisWeek = snapshot.data ?? '0';
-                              return Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  const Text(
-                                    'This Week',
-                                    style: TextStyle(
-                                      fontSize: 11,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  Text(
-                                    thisWeek,
-                                    style: const TextStyle(
-                                      fontSize: 11,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ],
-                              );
-                            }
-                          },
-                        ),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 5),
-                      child: Container(
-                        color: Colors.red,
-                        child: FutureBuilder(
-                          future: fetchUpComing(),
-                          builder: (BuildContext context,
-                              AsyncSnapshot<String?> snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return const Center();
-                            } else {
-                              String upcoming = snapshot.data ?? '0';
-                              return Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  const Text(
-                                    'Upcoming',
-                                    style: TextStyle(
-                                      fontSize: 11,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  Text(
-                                    upcoming,
-                                    style: const TextStyle(
-                                      fontSize: 11,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ],
-                              );
-                            }
-                          },
-                        ),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 5),
-                      child: Container(
-                        color: Colors.white,
-                        child: const Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              'All',
-                              style: TextStyle(
-                                fontSize: 11,
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Text(
-                              '31',
-                              style: TextStyle(
-                                fontSize: 11,
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
           isLoading
               ? const Center(child: CircularProgressIndicator())
               : Expanded(
@@ -428,14 +178,172 @@ class _EnquiryScreenState extends State<EnquiryScreen> {
                           ),
                         ),
                         children: [
-                          ContainerRowWidget(
-                            phoneNumber: newList?[index]['client_mobile_number']
-                                    .toString() ??
-                                '',
-                            secondaryNumber: newList?[index]
-                                        ['client_phone_number']
-                                    .toString() ??
-                                '',
+                          SizedBox(
+                            height: 130,
+                            width: double.infinity,
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.only(left: 40, right: 40),
+                              child: Column(
+                                children: [
+                                  const SizedBox(height: 10),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      GestureDetector(
+                                        onTap: () {
+                                          Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  NewEnquiryScreen(
+                                                clientName: newList?[index]
+                                                            ['client_name']
+                                                        .toString() ??
+                                                    '',
+                                                clientNumber1: newList?[index][
+                                                            'client_mobile_number']
+                                                        .toString() ??
+                                                    '',
+                                                clientNumber2: newList?[index][
+                                                            'client_phone_number']
+                                                        .toString() ??
+                                                    '',
+                                                clientWhatsappNumber: newList?[
+                                                                index]
+                                                            ['whatsapp_number']
+                                                        .toString() ??
+                                                    '',
+                                                clientEmail: newList?[index]
+                                                            ['email']
+                                                        .toString() ??
+                                                    '',
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            border:
+                                                Border.all(color: Colors.grey),
+                                            borderRadius:
+                                                BorderRadius.circular(5),
+                                          ),
+                                          height: 50,
+                                          width: 70,
+                                          child: const Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Icon(
+                                                Icons.edit_calendar_outlined,
+                                                color: Colors.blue,
+                                              ),
+                                              Text(
+                                                'Edit',
+                                                style: TextStyle(
+                                                    fontSize: 11,
+                                                    color: Colors.blue),
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            left: 10, right: 10),
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return AlertDialog(
+                                                  title: Center(
+                                                      child: Text('Contact')),
+                                                  content: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .center,
+                                                    mainAxisSize:
+                                                        MainAxisSize.min,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      TextButton(
+                                                        onPressed: () async {
+                                                          final Uri url = Uri(
+                                                            scheme: 'tel',
+                                                            path: newList?[index]
+                                                                        [
+                                                                        'client_mobile_number']
+                                                                    .toString() ??
+                                                                '',
+                                                          );
+                                                          if (await canLaunchUrl(
+                                                              url)) {
+                                                            await launchUrl(
+                                                                url);
+                                                          } else {}
+                                                        },
+                                                        child: Text(
+                                                            'Number 1: ${newList?[index]['client_mobile_number'].toString() ?? ''},'),
+                                                      ),
+                                                      TextButton(
+                                                          onPressed: () async {
+                                                            final Uri url = Uri(
+                                                                scheme: 'tel',
+                                                                path: newList?[index]
+                                                                            [
+                                                                            'client_phone_number']
+                                                                        .toString() ??
+                                                                    '');
+                                                            if (await canLaunchUrl(
+                                                                url)) {
+                                                              await launchUrl(
+                                                                  url);
+                                                            } else {}
+                                                          },
+                                                          child: Text(
+                                                              'Number 2:${newList?[index]['client_phone_number'].toString() ?? ''}'))
+                                                    ],
+                                                  ),
+                                                );
+                                              },
+                                            );
+                                          },
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  color: Colors.grey),
+                                              borderRadius:
+                                                  BorderRadius.circular(5),
+                                            ),
+                                            height: 50,
+                                            width: 70,
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Icon(
+                                                  Icons.phone,
+                                                  color: Colors.blue,
+                                                ),
+                                                Text(
+                                                  'Call',
+                                                  style: TextStyle(
+                                                      fontSize: 11,
+                                                      color: Colors.blue),
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              ),
+                            ),
                           )
                         ],
                       );

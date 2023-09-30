@@ -9,7 +9,7 @@ import 'package:uidemo/screens/clients.dart';
 import 'package:uidemo/screens/complaints.dart';
 import 'package:uidemo/screens/enquiry.dart/enquiryypage.dart';
 import 'package:uidemo/screens/logIn.dart';
-import 'package:uidemo/screens/new_enquiry.dart';
+import 'package:uidemo/screens/new_enquiry/new_enquiry_screen.dart';
 import 'package:uidemo/screens/orders.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -71,7 +71,7 @@ class _MyHomePageState extends State<MyHomePage> {
       case 0:
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const NewEnquiryScreen()),
+          MaterialPageRoute(builder: (context) => NewEnquiryScreen()),
         );
 
       case 1:

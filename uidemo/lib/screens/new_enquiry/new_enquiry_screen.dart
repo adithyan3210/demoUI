@@ -5,13 +5,41 @@ import 'package:uidemo/screens/Add_product/productino_model.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 class NewEnquiryScreen extends StatefulWidget {
-  const NewEnquiryScreen({super.key});
+  final String? clientName;
+  final String? clientNumber1;
+  final String? clientNumber2;
+  final String? clientWhatsappNumber;
+  final String? clientEmail;
+
+  const NewEnquiryScreen(
+      {super.key,
+      this.clientName,
+      this.clientNumber1,
+      this.clientNumber2,
+      this.clientWhatsappNumber,
+      this.clientEmail});
 
   @override
   State<NewEnquiryScreen> createState() => _NewEnquiryScreenState();
 }
 
 class _NewEnquiryScreenState extends State<NewEnquiryScreen> {
+  TextEditingController clientNameController = TextEditingController();
+  TextEditingController clientNumber1Controller = TextEditingController();
+  TextEditingController clientNumber2Controller = TextEditingController();
+  TextEditingController whatsAppNumberController = TextEditingController();
+  TextEditingController clientEmailController = TextEditingController();
+  @override
+  void initState() {
+    super.initState();
+
+    clientNameController.text = widget.clientName ?? '';
+    clientNumber1Controller.text = widget.clientNumber1 ?? '';
+    clientNumber2Controller.text = widget.clientNumber2 ?? '';
+    whatsAppNumberController.text = widget.clientWhatsappNumber ?? '';
+    clientEmailController.text = widget.clientEmail ?? '';
+  }
+
   List<SelectedProduct> selectedProducts = [];
 
   String selectedName = "";
@@ -307,26 +335,33 @@ class _NewEnquiryScreenState extends State<NewEnquiryScreen> {
                 children: [
                   Expanded(
                     child: Padding(
-                      padding: const EdgeInsets.only(left: 10, bottom: 20),
+                      padding: EdgeInsets.only(left: 10, bottom: 20),
                       child: Column(
                         children: [
-                          const Padding(
+                          Padding(
                             padding: EdgeInsets.only(bottom: 10),
                             child: TextField(
+                              controller: clientNumber1Controller,
                               keyboardType: TextInputType.number,
                               decoration: InputDecoration(
                                 labelText: 'Primary Number',
                               ),
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold),
                             ),
                           ),
-                          const Padding(
+                          Padding(
                             padding: EdgeInsets.only(bottom: 10),
                             child: TextField(
+                              controller: clientNumber2Controller,
                               keyboardType: TextInputType.number,
                               decoration: InputDecoration(
                                 labelText: 'Secondary Number',
-                                labelStyle: TextStyle(color: Colors.black),
                               ),
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold),
                             ),
                           ),
                           const Padding(
@@ -407,35 +442,47 @@ class _NewEnquiryScreenState extends State<NewEnquiryScreen> {
                   const SizedBox(width: 10),
                   Expanded(
                     child: Padding(
-                      padding: const EdgeInsets.only(right: 10, bottom: 20),
+                      padding: EdgeInsets.only(right: 10, bottom: 20),
                       child: Column(
                         children: [
-                          const Padding(
+                          Padding(
                             padding: EdgeInsets.only(bottom: 10),
                             child: TextField(
+                              controller: clientNameController,
                               decoration: InputDecoration(
                                 labelText: 'Name',
                                 labelStyle: TextStyle(color: Colors.black),
                               ),
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold),
                             ),
                           ),
-                          const Padding(
+                          Padding(
                             padding: EdgeInsets.only(bottom: 10),
                             child: TextField(
+                              controller: whatsAppNumberController,
                               keyboardType: TextInputType.number,
                               decoration: InputDecoration(
                                 labelText: 'WhatsApp Number',
                                 labelStyle: TextStyle(color: Colors.black),
                               ),
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold),
                             ),
                           ),
-                          const Padding(
+                          Padding(
                             padding: EdgeInsets.only(bottom: 10),
                             child: TextField(
+                              controller: clientEmailController,
                               decoration: InputDecoration(
                                 labelText: 'Email',
                                 labelStyle: TextStyle(color: Colors.black),
                               ),
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold),
                             ),
                           ),
                           Padding(
